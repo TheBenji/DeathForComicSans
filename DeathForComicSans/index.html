@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Death for Comic Sans</title>
+		<script type="text/javascript" src="jbb.js"></script>
+		<script type="text/javascript" src="game.js"></script>
+		<script type="text/javascript">
+
+			function initGame() {
+			
+				Graphics("gameCanvas", mainLoop, 100);
+				
+				LoadFont("ComicSans", "ComicSans.TTF", true, false);
+				
+				SetFont("Arial, Verdana, sans-serif", "30px", true, true);
+				
+				ClsColor(0, 0, 0);
+				SetColor(200, 200, 200);			
+			}
+			
+
+			function mainLoop() {
+				Cls();
+				
+				if(gameStatus == 0) {
+					SetFont("ComicSans", "18pt", true);
+					DrawText("Death for Comic Sans", 333, 55);
+					DrawText("Press any key to Start Game", 344, 211);
+					if(KeyPressed() != 0) startGame();
+				}
+				//Game
+				else if (gameStatus == 2) {
+					//gameController nur alle 50ms ausführen
+					if(gameTimer+50 < MilliSecs()) {
+						gameController();
+						gameTimer = MilliSecs();
+					}
+					
+					//userController sowie drawController in jedem Frame ausführen
+					userController();
+					drawController();
+					
+					//Neue W�rter erstellen
+					if(timer+1200/(level*0.25) < MilliSecs()) {
+						createWord();
+						timer = MilliSecs();
+					}
+				}
+				//Game Over
+				else if(gameStatus == 3) {
+					SetFont("Arial, Helvetica, sans-serif", "22pt", true);
+					DrawText("Game over....", 333, 400-merker);
+					SetFont("Arial, Helvetica, sans-serif", "16pt", true);
+					DrawText("Punkte: " + Math.floor(points), 333, 450-merker);
+					DrawText("Korrekte Wörter: " + wordCounter, 333, 475-merker);
+					DrawText("Falsche Wörter: " + falseWordCounter, 333, 500-merker);
+					DrawText("ø Punkte/Wort: " + Math.floor((points + 100*falseWordCounter)/wordCounter), 333, 525-merker);
+					DrawText("Geschrieben von: Ben // yaana.de", 333, 575-merker);
+					if(merker2 == 1)
+						DrawText("Beliebige Taste drücken zum fortfahren...", 333, 625-merker);
+
+					
+					//Zurück zum Hauptmenu: Kurze Verzögerung damit nicht direkt das Spiel wieder startet^^
+					if(KeyPressed() != 0) setTimeout("gameStatus = 0;", 20);
+					
+					if(timer+50 < MilliSecs() && merker < 300) {
+						merker += 2;
+						timer = MilliSecs();
+					}
+					
+					//"Blink"-effekt für den any-key schriftzug
+					if(gameTimer+300 < MilliSecs()) {
+						if(merker2 == 1) merker2 = 0; else merker2 = 1;
+						gameTimer = MilliSecs();
+					}
+				}
+
+				debug();
+			
+			}
+			
+			function debug() {
+				SetFont("Arial, Helvetica, sans-serif", "8pt", true);
+
+					DrawText(lastLetters.join(""), 55, 400);
+
+				getFPS();
+			}
+			
+			function getFPS() {
+				fpsTemp++;
+				time = MilliSecs();
+				if (time > lastTimeFPS + 1000) {
+					fps = fpsTemp;
+					
+					ticks++;
+					ticksFPS += fps;
+					
+					fpsTemp = 0;
+					lastTimeFPS = time;
+				}
+				SetFont("Arial, Helvetica, sans-serif", "8pt", true);
+				DrawText("FPS: " + fps, 10, 400);
+			}
+		</script>
+</head>
+<body>
+<body onLoad="initGame();">
+
+
+<div id="debug"></div>
+<canvas style="float:right;" id="gameCanvas" width="1024" height="440">
+Dein Browser unterst&uuml;tzt das Canvas-element nicht. <br />
+Versuche es doch mal mit dem FireFox ab Version4 oder so ;)
+    </canvas>
+    
+    
+</body>
+</html>
