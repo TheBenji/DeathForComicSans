@@ -22,12 +22,30 @@
 
 			function mainLoop() {
 				Cls();
-				
 				if(gameStatus == 0) {
 					SetFont("ComicSans", "18pt", true);
 					DrawText("Death for Comic Sans", 333, 55);
-					DrawText("Press any key to Start Game", 344, 211);
-					if(KeyPressed() != 0) startGame();
+					DrawText("Press space to Start Game", 344, 211);
+					//Starte Spiel mit der Taste d um den debug modus zu aktivieren
+					if(KeyPressed() == 68) debug = 1;
+					if(KeyHit(32)) {
+						gameStatus = 1;
+						merker = -50;
+					}
+				}
+				//Einführender Text
+				else if (gameStatus == 1) {
+					document.getElementById("gameText").style.display = "block";
+					if(timer+50 < MilliSecs() && merker > -500) {
+						merker -= 2;
+						timer = MilliSecs();
+					}
+					document.getElementById("gameText").style.top = merker+"px";
+					document.getElementById("gameText").style.height = (merker*(-1))-50+"px";
+					if(KeyPressed() != 0) {
+						startGame();
+						document.getElementById("gameText").style.display = "none";
+					}
 				}
 				//Game
 				else if (gameStatus == 2) {
@@ -61,8 +79,8 @@
 						DrawText("Beliebige Taste drücken zum fortfahren...", 333, 625-merker);
 
 					
-					//Zurück zum Hauptmenu: Kurze Verzögerung damit nicht direkt das Spiel wieder startet^^
-					if(KeyPressed() != 0) setTimeout("gameStatus = 0;", 20);
+					//Zurück zum Hauptmenu (nicht direkt nach dem GameOver...): Kurze Verzögerung damit nicht direkt das Spiel wieder startet^^
+					if(KeyPressed() != 0 && merker > 200) setTimeout("gameStatus = 0;", 20);
 					
 					if(timer+50 < MilliSecs() && merker < 300) {
 						merker += 2;
@@ -75,8 +93,7 @@
 						gameTimer = MilliSecs();
 					}
 				}
-
-				debug();
+				if(debug == 1) debug();
 			
 			}
 			
@@ -105,16 +122,25 @@
 			}
 		</script>
 </head>
-<body>
-<body onLoad="initGame();">
+<body style="background:url(images/back.jpg);" onLoad="initGame();">
 
 
-<div id="debug"></div>
-<canvas style="float:right;" id="gameCanvas" width="1024" height="440">
-Dein Browser unterst&uuml;tzt das Canvas-element nicht. <br />
-Versuche es doch mal mit dem FireFox ab Version4 oder so ;)
+	<canvas style="margin:0 auto; display:block;" id="gameCanvas" width="1024" height="632">
+		Dein Browser unterst&uuml;tzt das Canvas-element nicht. <br />
+		Versuche es doch mal mit dem FireFox oder Chrome in einer aktuellen Version :)
     </canvas>
     
+	<div style="color:#fff; font-size:18pt; margin:0 auto; display:none; position:relative; top:-50px; width:768px; height:0px; overflow:hidden;" id="gameText">
+		<p>
+			Wir schreiben das Jahr 2063 und die Schriftart “Comic Sans MS” versucht die Herrschaft über das ganze uns bekannte Universum zu übernehmen.<br />
+			Viele Schriftarten sind diesem Angriff schon zum Opfer gefallen und nun wird es Zeit zurück zu schlagen!<br />
+			Heute, exakt 18521 Tage nachdem “Comic Sans MS” die Erde erobert hat wird es Zeit diese grausige Schriftart in ihre Schranken zuweisen!<br />
+		</p>
+		<p>
+			Es liegt an dir, kleiner grün-braun gestreifter Klotz - niemand sonst hat die Macht “Comic Sans MS” aufzuhalten.<br />
+			Geh nun und bekämpfe das böse dieser Welt!
+		</p>
+	</div>
     
 </body>
 </html>

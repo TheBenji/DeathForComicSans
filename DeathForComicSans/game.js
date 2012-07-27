@@ -1,5 +1,5 @@
 var wordList = ["Papier", "Glas", "Band", "Maus", "Katze","Hund", "Hafer", "Stift",  "Schrank", "Regal","Ordner", "Fenster", "Tuch", "Keks", "Frosch", "Milch", "Handy", "Honig", "Kabel", "Spiel", "Freak", "Tasche", "Lampe", "Kasten", "Monitor", "Buch", "Bild"];
-var fontList = ["ComicSans", "Arial"];
+var fontList = ["ComicSans", "Arial", "ComicSans", "ComicSans"];
 
 var lastTimeFPS = 0;
 var ticksFPS = 0;
@@ -14,6 +14,7 @@ var gameStatus = 0;
 
 var timer = MilliSecs();
 var gameTimer = MilliSecs();
+var lastHeadUp = MilliSecs();
 
 var points = 0;
 var wordCounter = 0;
@@ -23,6 +24,8 @@ var level = 1;
 var lives = 5;
 var merker = 1;
 var merker2 = 0;
+var debug = 0;
+var rotate = 45;
 
 var word = function() {
 	this.name;
@@ -40,7 +43,11 @@ function startGame() {
 	wordCounter = 0;
 	falseWordCounter = 0;
 	level = 1;
+	merker = 1;
+	merker2 = 0;
+	debug = 0;
 	lives = 5;
+	rotate = 45;
 	actWords = [];
 	lastLetters = [];
 	timer = MilliSecs();
@@ -48,6 +55,10 @@ function startGame() {
 	
 	createWord();
 	createWord();
+}
+
+function headUp() {
+	rotate = 0;
 }
 
 function existWord(word) {
@@ -108,6 +119,14 @@ function userController() {
 }
 
 function gameController() {
+	//ggf. das komplette Canvas drehen
+	if(rotate < 45) {
+		jbbBase.getCanvas().translate(GraphicsWidth()/2, GraphicsHeight()/2);
+		jbbBase.getCanvas().rotate(4 * Math.PI/180);
+		jbbBase.getCanvas().translate(-GraphicsWidth()/2, -GraphicsHeight()/2);
+		rotate++;
+	}
+	
 	for(var i = 0; i < actWords.length; i++) {
 
 		if(actWords[i].status == 1) {
@@ -128,6 +147,14 @@ function gameController() {
 					wordCounter++;
 					//Man kann keine Level mehr absteigen...aber aufsteigen:
 					if((Exp(level)*25) < points) level++;
+					//Ab lvl.3 bei jedem richtigen Wort eine Chance von 25% auf headUp (für 10 sekunden)
+					var rnd = Rnd(1, 4);
+					console.log(rnd);
+					if(level > 2 && rnd == 3 && rotate == 45 && lastHeadUp+20000 < MilliSecs()) {
+						headUp();
+						setTimeout("headUp()", 10000);
+						lastHeadUp = MilliSecs();
+					}
 				}
 				else {
 					points -= 100;
