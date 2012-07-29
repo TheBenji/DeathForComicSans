@@ -23,13 +23,15 @@
 			function mainLoop() {
 				Cls();
 				if(gameStatus == 0) {
-					SetFont("ComicSans", "18pt", true);
+					/*SetFont("ComicSans", "18pt", true);
 					DrawText("Death for Comic Sans", 333, 55);
-					DrawText("Press space to Start Game", 344, 211);
+					SetFont("ComicSans", "22pt", true);
+					DrawText("Leertaste zum starten", 300, 211);*/
 					//Starte Spiel mit der Taste d um den debug modus zu aktivieren
 					if(KeyPressed() == 68) debug = 1;
 					if(KeyHit(32)) {
 						gameStatus = 1;
+						document.getElementById("helpText").style.display = "none";
 						merker = -50;
 					}
 				}
@@ -74,13 +76,16 @@
 					DrawText("Korrekte Wörter: " + wordCounter, 333, 475-merker);
 					DrawText("Falsche Wörter: " + falseWordCounter, 333, 500-merker);
 					DrawText("ø Punkte/Wort: " + Math.floor((points + 100*falseWordCounter)/wordCounter), 333, 525-merker);
-					DrawText("Geschrieben von: Ben // yaana.de", 333, 575-merker);
+					DrawText("Geschrieben von: Ben", 333, 575-merker);
 					if(merker2 == 1)
 						DrawText("Beliebige Taste drücken zum fortfahren...", 333, 625-merker);
 
 					
 					//Zurück zum Hauptmenu (nicht direkt nach dem GameOver...): Kurze Verzögerung damit nicht direkt das Spiel wieder startet^^
-					if(KeyPressed() != 0 && merker > 200) setTimeout("gameStatus = 0;", 20);
+					if(KeyPressed() != 0 && merker > 200) {
+						gameStatus = 0;
+						document.getElementById("helpText").style.display = "block";
+					}
 					
 					if(timer+50 < MilliSecs() && merker < 300) {
 						merker += 2;
@@ -93,15 +98,13 @@
 						gameTimer = MilliSecs();
 					}
 				}
-				if(debug == 1) debug();
+				if(debug == 1) { Debug(); }
 			
 			}
 			
-			function debug() {
+			function Debug() {
 				SetFont("Arial, Helvetica, sans-serif", "8pt", true);
-
-					DrawText(lastLetters.join(""), 55, 400);
-
+				DrawText(lastLetters.join(""), 55, 600);
 				getFPS();
 			}
 			
@@ -118,7 +121,7 @@
 					lastTimeFPS = time;
 				}
 				SetFont("Arial, Helvetica, sans-serif", "8pt", true);
-				DrawText("FPS: " + fps, 10, 400);
+				DrawText("FPS: " + fps, 10, 600);
 			}
 		</script>
 </head>
@@ -139,6 +142,26 @@
 		<p>
 			Es liegt an dir, kleiner grün-braun gestreifter Klotz - niemand sonst hat die Macht “Comic Sans MS” aufzuhalten.<br />
 			Geh nun und bekämpfe das böse dieser Welt!
+		</p>
+	</div>
+	<div style="color:#fff; font-family: ComicSans; font-size:16pt; margin:0 auto; display:block; position:relative; top:-630px; width:768px;" id="helpText">
+		<center>
+			<h2>Death for Comic Sans MS</h2>
+			<h1>Leertaste zum starten</h1>
+		</center>
+		<h3>Hilfe:</h3>
+		<p>
+			Du befindest dich im Weltraum und alle möglichen Wörter fliegen dir entgegen.
+			Tippe das Wort einfach auf deiner Tastatur um es verschwinden zu lassen!
+		</p>
+		<p>
+			Achte darauf das du nur Wörter in der Schriftart “Comic Sans MS” tippst, lässt du
+			andere Wörter verschwinden gibt das Punktabzug.
+		</p>
+		<p>
+			Wenn dir ein Wort in der Schriftart “Comic Sans MS” zu nah kommt verlierst du 
+			ein Leben.
+			Hast du alle Leben verloren ist das Spiel vorbei.
 		</p>
 	</div>
     

@@ -1,4 +1,4 @@
-var wordList = ["Papier", "Glas", "Band", "Maus", "Katze","Hund", "Hafer", "Stift",  "Schrank", "Regal","Ordner", "Fenster", "Tuch", "Keks", "Frosch", "Milch", "Handy", "Honig", "Kabel", "Spiel", "Freak", "Tasche", "Lampe", "Kasten", "Monitor", "Buch", "Bild"];
+var wordList = ["Papier","Shop", "Tisch", "Stuhl", "Gurt", "Zahl", "Kerze", "Karten", "Java", "Glas", "Band", "Maus", "Katze","Hund", "Hafer", "Stift",  "Schrank", "Regal","Ordner", "Fenster", "Tuch", "Keks", "Frosch", "Milch", "Handy", "Honig", "Kabel", "Spiel", "Freak", "Tasche", "Lampe", "Kasten", "Monitor", "Buch", "Bild"];
 var fontList = ["ComicSans", "Arial", "ComicSans", "ComicSans"];
 
 var lastTimeFPS = 0;
@@ -45,7 +45,6 @@ function startGame() {
 	level = 1;
 	merker = 1;
 	merker2 = 0;
-	debug = 0;
 	lives = 5;
 	rotate = 45;
 	actWords = [];
@@ -102,14 +101,22 @@ function drawController() {
 	}
 }
 
-function userController() {
-	//Pr�fen ob ein Buchstabe getippt wurde und sichern (es wird in den W�rtern nicht 2x den selben Buchstaben hintereinander geben...)
-	if(KeyPressed() >= 65 && KeyPressed() <= 90 && String.fromCharCode(KeyPressed()) != lastLetters[lastLetters.length - 1]) {
-		lastLetters.push(String.fromCharCode(KeyPressed()));	
+function newLetter(key) {
+	if (String.fromCharCode(key) != lastLetters[lastLetters.length - 1]) {
+		lastLetters.push(String.fromCharCode(key));	
 		//Es werden nur die x letzten Zeichen gewertet
 		if(lastLetters.length > 10) {
 			lastLetters.shift();
 		}
+	}
+}
+
+function userController() {
+	//Pr�fen ob ein Buchstabe getippt wurde und sichern (es wird in den W�rtern nicht 2x den selben Buchstaben hintereinander geben...)
+	var key = KeyPressed();
+	if(key >= 65 && key <= 90) {
+		//Verzögerung der Eingabe (vorgabe^^)
+		setTimeout("newLetter("+key+");", 150);
 	}
 	//Punkte & Level ausgeben
 	SetFont("Arial, Verdana, sans-serif", "12pt", true, true);
